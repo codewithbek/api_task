@@ -6,6 +6,8 @@ import 'package:api_task/service/open_api_service.dart';
 class AddData{
    OpenApiService openApiService = OpenApiService(openApiClient: OpenApiClient());
 
+   List<CachedDataApi> malumotlar = [];
+
   Future<List<CachedDataApi>> getAllCachedList()async{
     LocalDatabase.getInstance;
     var data = await openApiService.getAllData();
@@ -21,6 +23,7 @@ class AddData{
        )));
     }
     print("CaCHeddd DAta $cachedList");
+    malumotlar = cachedList;
     return cachedList;
   }
 }

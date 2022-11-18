@@ -1,10 +1,13 @@
 import 'package:api_task/cubits/get_data/get_data_cubit.dart';
+import 'package:api_task/db/insert_data_to_sql.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
+
+  final AddData addData = AddData();
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +25,7 @@ class HomePage extends StatelessWidget {
           } else if (state.status == FormzStatus.submissionFailure) {
             return Text(state.errorText);
           } else if (state.status == FormzStatus.submissionSuccess) {
+            addData.getAllCachedList();
             debugPrint(state.currencyData.length.toString());
             return ListView(
               children: List.generate(
