@@ -23,7 +23,6 @@ class CachedDataFields {
 
 class CachedDataApi {
 
-
   int? id;
   final String title;
   final String code;
