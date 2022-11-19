@@ -1,45 +1,46 @@
+import 'package:api_task/cubits/connectivity/connectivity_cubit.dart';
 import 'package:api_task/cubits/get_data/get_data_cubit.dart';
-import 'package:api_task/db/insert_data_to_sql.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({Key? key}) : super(key: key);
-
-  final AddData addData = AddData();
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Home Screen"),
+        title: Text(context.watch<GetDataCubit>().state.isInternet),
         centerTitle: true,
       ),
-      body: BlocBuilder<GetDataCubit, GetDataState>(
-        builder: (context, state) {
-          if (state.status == FormzStatus.submissionInProgress) {
-            return const Center(
-              child: CircularProgressIndicator.adaptive(),
-            );
-          } else if (state.status == FormzStatus.submissionFailure) {
-            return Text(state.errorText);
-          } else if (state.status == FormzStatus.submissionSuccess) {
-            addData.getAllCachedList();
-            debugPrint(state.currencyData.length.toString());
-            return ListView(
-              children: List.generate(
-                state.currencyData.length,
-                (index) => ListTile(
-                  title: Text(state.currencyData[index].title),
-                  subtitle: Text(state.currencyData[index].code),
-                ),
-              ),
-            );
+      body: BlocListener<ConnectivityCubit, ConnectivityState>(
+        listener: (context, internetState) {
+          if (internetState.connectivityResult == ConnectivityResult.none) {
+            context.read<GetDataCubit>().getCategoriesFromDB();
           } else {
-            return const SizedBox();
+            context.read<GetDataCubit>().getCategories();
           }
         },
+        child: BlocBuilder<GetDataCubit, GetDataState>(
+          builder: (context, dataState) {
+            debugPrint(dataState.currencyData.length.toString());
+            return dataState.status.isSubmissionInProgress
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : ListView.builder(
+                    itemCount: dataState.currencyData.length,
+                    itemBuilder: (context, index) {
+                      var nbu = dataState.currencyData[index];
+                      return ListTile(
+                        title: Text(nbu.title),
+                      );
+                    },
+                  );
+          },
+        ),
       ),
     );
   }
