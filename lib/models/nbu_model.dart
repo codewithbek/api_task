@@ -4,13 +4,14 @@ part 'nbu_model.g.dart';
 
 @JsonSerializable(explicitToJson: false)
 class NbuModel {
-  NbuModel(
-      {required this.title,
-      required this.code,
-      required this.cbPrice,
-      required this.nbuBuyPrice,
-      required this.nbuCellPrice,
-      required this.date});
+  NbuModel({
+    required this.title,
+    required this.code,
+    required this.cbPrice,
+    required this.nbuBuyPrice,
+    required this.nbuCellPrice,
+    required this.date,
+  });
 
   @JsonKey(defaultValue: "", name: "title")
   String title;

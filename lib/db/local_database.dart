@@ -64,18 +64,18 @@ class LocalDatabase {
     return cachedDataApi.copyWith(id: id);
   }
 
-  static Future<List<CachedDataApi>?> getAllCachedTodo() async {
+  static Future<List<CachedDataApi>> getAllCachedData() async {
     final db = await getInstance.database;
     const orderBy = "${CachedDataFields.title} ASC";
 
     final result = await db?.query(dataTable, orderBy: orderBy);
-    return result?.map((json) => CachedDataApi.fromJson(json)).toList();
+    return result?.map((json) => CachedDataApi.fromJson(json)).toList()??[];
   }
 
-  // static Future<int?> deleteAllCachedTodos() async {
-  //   final db = await getInstance.database;
-  //   return await db?.delete(myTableName);
-  // }
+  static Future<int?> deleteAllCachedData() async {
+    final db = await getInstance.database;
+    return await db?.delete(dataTable);
+  }
   //
   // static Future<int> deleteCachedTodoById(int id) async {
   //   final db = await getInstance.database;
